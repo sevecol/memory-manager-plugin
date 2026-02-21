@@ -62,6 +62,28 @@ def _extract_message_text(content: list[dict], role: str) -> str:
     return "\n".join([c for c in text_chunks if c]).strip()
 
 
+def _is_noise_text(role: str, text: str) -> bool:
+    t = text.strip()
+    if not t:
+        return True
+    low = t.lower()
+    noise_markers = (
+        "# agents.md instructions",
+        "<instructions>",
+        "available skills",
+        "how to use skills",
+        "filesystem sandboxing defines",
+        "you are codex, a coding agent",
+        "<permissions instructions>",
+    )
+    if any(m in low for m in noise_markers):
+        return True
+    # Ignore massive setup payloads that are not user intent.
+    if role == "user" and len(t) > 2500:
+        return True
+    return False
+
+
 def _extract_dialog(lines: list[dict], max_messages: int) -> list[tuple[str, str]]:
     dialog: list[tuple[str, str]] = []
     for item in lines:
@@ -74,7 +96,7 @@ def _extract_dialog(lines: list[dict], max_messages: int) -> list[tuple[str, str
         if role not in {"user", "assistant"}:
             continue
         text = _extract_message_text(payload.get("content", []), role)
-        if text:
+        if text and not _is_noise_text(role, text):
             dialog.append((role, text))
     if max_messages > 0 and len(dialog) > max_messages:
         return dialog[-max_messages:]
@@ -186,4 +208,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
