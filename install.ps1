@@ -40,7 +40,8 @@ $itemsToCopy = @(
   "agents",
   "assets",
   "references",
-  "scripts"
+  "scripts",
+  "start-codex-with-memory.ps1"
 )
 
 foreach ($item in $itemsToCopy) {
@@ -54,4 +55,3 @@ foreach ($item in $itemsToCopy) {
 Write-Host "Installed skill '$SkillName' to: $dest"
 Write-Host "Use from project root:"
 Write-Host "  python `"$dest\scripts\memory_manager.py`" on"
-

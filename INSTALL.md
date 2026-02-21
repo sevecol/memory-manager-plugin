@@ -12,6 +12,19 @@ Remote bootstrap install (download from GitHub then install):
 powershell -ExecutionPolicy Bypass -Command "iwr https://raw.githubusercontent.com/sevecol/memory-manager-plugin/main/bootstrap-install.ps1 -UseBasicParsing | iex"
 ```
 
+Start Codex with auto memory sync on exit:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$HOME\.codex\skills\memory-manager\start-codex-with-memory.ps1" -ProjectDir "C:\path\to\project"
+```
+
+Behavior:
+
+- auto enable memory mode for the project (`on`)
+- start Codex CLI in that project
+- when Codex exits, parse latest `~/.codex/sessions/*.jsonl`
+- extract user/assistant dialog and run `sync`
+
 Default install target:
 
 - `%CODEX_HOME%\skills\memory-manager` if `CODEX_HOME` is set
