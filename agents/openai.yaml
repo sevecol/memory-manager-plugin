@@ -1,0 +1,6 @@
+version: 1
+interface:
+  display_name: Memory Manager
+  short_description: Project memory mode with on/off, sync, and recall.
+  default_prompt: Enable memory mode for this project, save concise session memory on quit, and recall indexed detail notes when relevant keywords appear.
+

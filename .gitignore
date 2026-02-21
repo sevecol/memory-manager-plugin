@@ -1,0 +1,5 @@
+.codex/
+docs/memory/
+__pycache__/
+*.pyc
+
