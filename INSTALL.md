@@ -21,9 +21,16 @@ powershell -ExecutionPolicy Bypass -File "$HOME\.codex\skills\memory-manager\sta
 Behavior:
 
 - auto enable memory mode for the project (`on`)
+- preload `docs/memory/main.md` as startup context (default enabled)
 - start Codex CLI in that project
 - when Codex exits, parse latest `~/.codex/sessions/*.jsonl`
 - extract user/assistant dialog and run `sync`
+
+Disable preload when needed:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$HOME\.codex\skills\memory-manager\start-codex-with-memory.ps1" -DisablePreloadMain
+```
 
 Default install target:
 

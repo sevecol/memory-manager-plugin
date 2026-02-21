@@ -2,9 +2,12 @@ param(
   [string]$ProjectDir = "",
   [string]$CodexCmd = "codex.cmd",
   [string[]]$CodexArgs = @(),
+  [string]$InitialPrompt = "",
   [string]$Topic = "session-auto",
+  [int]$PreloadMaxChars = 6000,
   [switch]$DisableAutoEnable,
-  [switch]$DisableAutoSync
+  [switch]$DisableAutoSync,
+  [switch]$DisablePreloadMain
 )
 
 $ErrorActionPreference = "Stop"
@@ -35,8 +38,36 @@ if (-not $DisableAutoEnable) {
   & python $memoryManager --project $project on | Out-Host
 }
 
+$preloadPrompt = ""
+if (-not $DisablePreloadMain) {
+  $mainPath = Join-Path $project "docs\memory\main.md"
+  if (Test-Path -LiteralPath $mainPath) {
+    $mainText = Get-Content -LiteralPath $mainPath -Raw -Encoding utf8
+    if ($mainText.Length -gt $PreloadMaxChars) {
+      $mainText = $mainText.Substring($mainText.Length - $PreloadMaxChars)
+    }
+    $preloadPrompt = @"
+Read and retain this project memory summary for follow-up questions. Do not summarize it now; wait for my next request.
+[MEMORY_MAIN_BEGIN]
+$mainText
+[MEMORY_MAIN_END]
+"@
+  }
+}
+
+if ($InitialPrompt -and $InitialPrompt.Trim().Length -gt 0) {
+  if ($preloadPrompt) {
+    $preloadPrompt = $preloadPrompt + "`n`n" + $InitialPrompt
+  } else {
+    $preloadPrompt = $InitialPrompt
+  }
+}
+
 Write-Host "Starting Codex in project: $project"
 $launchArgs = @("-C", $project) + $CodexArgs
+if ($preloadPrompt) {
+  $launchArgs += $preloadPrompt
+}
 & $CodexCmd @launchArgs
 $codexExit = $LASTEXITCODE
 
