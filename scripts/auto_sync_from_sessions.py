@@ -67,6 +67,8 @@ def _is_noise_text(role: str, text: str) -> bool:
     if not t:
         return True
     low = t.lower()
+    if "[memory_main_begin]" in low and "[memory_main_end]" in low:
+        return True
     noise_markers = (
         "# agents.md instructions",
         "<instructions>",
@@ -75,6 +77,11 @@ def _is_noise_text(role: str, text: str) -> bool:
         "filesystem sandboxing defines",
         "you are codex, a coding agent",
         "<permissions instructions>",
+        "<environment_context>",
+        "[memory_main_begin]",
+        "[memory_main_end]",
+        "read and retain this project memory summary",
+        "do not summarize it now; wait for my next request",
     )
     if any(m in low for m in noise_markers):
         return True
