@@ -17,3 +17,8 @@ Optional custom target:
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -TargetSkillsDir "C:\path\to\skills"
 ```
 
+Uninstall:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
+```
